@@ -144,6 +144,7 @@ export function RuleEditorSheet({
       <ScrollView
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
+        style={{ flexGrow: 0, flexShrink: 1 }}
         contentContainerStyle={{ paddingBottom: 8 }}>
         <SegmentedControl options={kindOptions} value={kind} onChange={setKind} />
 

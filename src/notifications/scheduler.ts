@@ -62,13 +62,8 @@ async function runReschedule(db: SQLiteDatabase): Promise<RescheduleResult> {
   const windowEnd = windowStart + SCHEDULE_WINDOW_DAYS * DAY_MS;
   const hasPermission = await hasNotificationPermission();
 
-  try {
-    await Notifications.cancelAllScheduledNotificationsAsync();
-  } catch {
-    // A stale alarm list must never stop the app from rebuilding.
-  }
-
   if (!hasPermission) {
+    await Notifications.cancelAllScheduledNotificationsAsync().catch(() => undefined);
     return {
       scheduled: 0,
       skipped: 0,
@@ -80,6 +75,40 @@ async function runReschedule(db: SQLiteDatabase): Promise<RescheduleResult> {
   }
 
   const [items, settings] = await Promise.all([listItems(db), loadSettings(db)]);
+  const snoozeEligibleItemIds = new Set(
+    items
+      .filter(
+        (item) =>
+          !item.done &&
+          item.enabled &&
+          !(item.type === 'class' && settings.holidayMode),
+      )
+      .map((item) => item.id),
+  );
+
+  // A snooze is user-created and intentionally not part of the database
+  // schedule, so keep it across rebuilds. Snoozes for deleted, finished, or
+  // disabled items are cancelled along with the normal schedule.
+  try {
+    const previous = await Notifications.getAllScheduledNotificationsAsync();
+    for (const request of previous) {
+      const itemId = request.content.data?.itemId;
+      if (
+        request.content.data?.snoozed === true &&
+        typeof itemId === 'string' &&
+        snoozeEligibleItemIds.has(itemId)
+      ) {
+        continue;
+      }
+      await Notifications.cancelScheduledNotificationAsync(request.identifier).catch(
+        () => undefined,
+      );
+    }
+  } catch {
+    // If the old list cannot be read, clear it to avoid duplicate alarms.
+    await Notifications.cancelAllScheduledNotificationsAsync().catch(() => undefined);
+  }
+
   const pending: PendingFire[] = [];
 
   for (const item of items) {
