@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { CalendarItemRow } from '@/components/calendar-item-row';
-import { AppText, Ionicons } from '@/components/ui/app-text';
+import { AppText } from '@/components/ui/app-text';
 import { Card, SectionHeader } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/empty-state';
 import { FloatingActionButton } from '@/components/ui/fab';
@@ -18,7 +18,7 @@ import { IconButton } from '@/components/ui/button';
 import { PageHeader, Screen } from '@/components/ui/screen';
 import { daysWithItems, itemsForDay, monthGrid, type MonthCell } from '@/domain/calendar';
 import { WEEKDAY_ORDER, WEEKDAY_SHORT_LABELS } from '@/domain/constants';
-import { formatFullDate, formatMonthTitle } from '@/domain/format';
+import { formatFullDate, formatMonthTitle, formatShortDate } from '@/domain/format';
 import { useItems } from '@/hooks/use-items';
 import { useTheme } from '@/theme';
 
@@ -133,7 +133,7 @@ export default function CalendarScreen() {
         ))}
       </Card>
 
-      <SectionHeader title="Item hari ini" actionLabel={formatFullDate(selected)} />
+      <SectionHeader title="Item hari ini" actionLabel={formatShortDate(selected)} />
       {dayItems.length === 0 ? (
         <EmptyState
           icon="calendar-clear-outline"

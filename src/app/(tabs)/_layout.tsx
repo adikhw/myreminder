@@ -8,9 +8,13 @@ import { useTheme } from '@/theme';
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
 function tabIcon(name: IconName) {
-  return ({ color, size }: { color: ColorValue | null; size: number }) => (
-    <Ionicons name={name} size={size} color={typeof color === 'string' ? color : undefined} />
-  );
+  function TabBarIcon({ color, size }: { color: ColorValue | null; size: number }) {
+    return (
+      <Ionicons name={name} size={size} color={typeof color === 'string' ? color : undefined} />
+    );
+  }
+  TabBarIcon.displayName = `TabBarIcon(${name})`;
+  return TabBarIcon;
 }
 
 export default function TabsLayout() {

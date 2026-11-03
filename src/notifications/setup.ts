@@ -1,3 +1,4 @@
+import { AndroidImportance } from 'expo-notifications';
 import * as Notifications from 'expo-notifications';
 import * as TaskManager from 'expo-task-manager';
 import { Platform } from 'react-native';
@@ -10,14 +11,6 @@ import {
   REMINDER_CATEGORY,
   SNOOZE_ACTION,
 } from './constants';
-
-export {
-  CHANNEL_ID,
-  CLASS_CATEGORY,
-  DONE_ACTION,
-  REMINDER_CATEGORY,
-  SNOOZE_ACTION,
-};
 
 let setupPromise: Promise<void> | null = null;
 
@@ -52,7 +45,7 @@ export async function ensureChannel(): Promise<void> {
   await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
     name: 'Pengingat',
     description: 'Pengingat tugas, acara, dan jadwal mapel',
-    importance: Notifications.AndroidImportance.HIGH,
+    importance: AndroidImportance.HIGH,
     sound: 'default',
     vibrationPattern: [0, 250, 180, 250],
     lightColor: '#4F46E5',

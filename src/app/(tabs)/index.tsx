@@ -33,7 +33,7 @@ import { useTheme } from '@/theme';
 
 type Filter = 'all' | 'active' | 'done';
 
-const FILTERS: Array<{ value: Filter; label: string }> = [
+const FILTERS: { value: Filter; label: string }[] = [
   { value: 'all', label: 'Semua' },
   { value: 'active', label: 'Aktif' },
   { value: 'done', label: 'Selesai' },

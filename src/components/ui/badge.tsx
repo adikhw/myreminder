@@ -86,7 +86,7 @@ export function Chip({ label, selected = false, onPress, icon, style }: ChipProp
 }
 
 interface SegmentedControlProps<T extends string> {
-  options: Array<{ value: T; label: string; icon?: IconName }>;
+  options: { value: T; label: string; icon?: IconName }[];
   value: T;
   onChange: (value: T) => void;
 }

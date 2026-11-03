@@ -1,13 +1,6 @@
 import * as SplashScreen from 'expo-splash-screen';
 import type { SQLiteDatabase } from 'expo-sqlite';
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
 import { LoadingScreen } from '@/components/loading-screen';
 import { AppText } from '@/components/ui/app-text';
@@ -27,7 +20,6 @@ export function DatabaseProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let active = true;
-    setError(null);
     getDatabase()
       .then((database) => {
         if (active) setDb(database);
@@ -47,7 +39,15 @@ export function DatabaseProvider({ children }: { children: ReactNode }) {
   }, [db, error]);
 
   if (error) {
-    return <DatabaseError message={error} onRetry={() => setAttempt((value) => value + 1)} />;
+    return (
+      <DatabaseError
+        message={error}
+        onRetry={() => {
+          setError(null);
+          setAttempt((value) => value + 1);
+        }}
+      />
+    );
   }
   if (!db) return <LoadingScreen />;
   return <DatabaseContext.Provider value={db}>{children}</DatabaseContext.Provider>;

@@ -154,7 +154,7 @@ export async function seedDemoData(db: SQLiteDatabase): Promise<number> {
   }).getTime();
   const repeatStart = now.getTime() + 10 * 60_000;
 
-  const demo: Array<{ id: string; input: ItemInput; createdAt: number }> = [
+  const demo: { id: string; input: ItemInput; createdAt: number }[] = [
     {
       id: 'demo-task-1',
       createdAt: now.getTime() - 5_000,

@@ -22,11 +22,17 @@ export function useNotificationPermissions() {
   }, []);
 
   useEffect(() => {
-    refresh().catch(() => undefined);
+    // Defer the first read so the effect only subscribes to external state.
+    const timer = setTimeout(() => {
+      refresh().catch(() => undefined);
+    }, 0);
     const subscription = AppState.addEventListener('change', (state) => {
       if (state === 'active') refresh().catch(() => undefined);
     });
-    return () => subscription.remove();
+    return () => {
+      clearTimeout(timer);
+      subscription.remove();
+    };
   }, [refresh]);
 
   const request = useCallback(async () => {
