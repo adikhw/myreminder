@@ -47,8 +47,8 @@ const STEPS: Step[] = [
   },
   {
     icon: 'refresh-outline',
-    title: 'Buka app setelah reboot',
-    body: 'Android menghapus alarm saat HP dimatikan. Buka myReminder sekali setelah menyalakan HP agar semua pengingat dibuat ulang.',
+    title: 'Setelah HP restart',
+    body: 'Alarm biasanya dipulihkan otomatis setelah reboot. Kalau ada pengingat yang terlewat, buka myReminder sekali agar jadwal dibangun ulang dari database.',
   },
 ];
 
