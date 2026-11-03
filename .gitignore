@@ -41,3 +41,15 @@ example
 # generated native folders
 /ios
 /android
+
+# release artifacts
+/dist
+*.apk
+*.aab
+
+# local signing material
+*.keystore
+*.jks
+
+# File project
+MYREMINDER.md
