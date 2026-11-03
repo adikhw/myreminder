@@ -55,25 +55,37 @@ export default function SettingsScreen() {
   }
 
   async function sendTest() {
-    const id = await scheduleTestNotification(10);
-    if (!id) {
-      openNotificationHelp();
-      return;
+    try {
+      const id = await scheduleTestNotification(10);
+      if (!id) {
+        openNotificationHelp();
+        return;
+      }
+      Alert.alert(
+        'Tes dijadwalkan',
+        'Notifikasi akan muncul sekitar 10 detik lagi. Kunci HP sebentar untuk memastikan notifikasi tampil.',
+      );
+    } catch {
+      Alert.alert('Gagal menjadwalkan tes', 'Coba periksa izin notifikasi lalu ulangi.');
     }
-    Alert.alert(
-      'Tes dijadwalkan',
-      'Notifikasi akan muncul sekitar 10 detik lagi. Kunci HP sebentar untuk memastikan notifikasi tampil.',
-    );
   }
 
   async function selectSnooze(minutes: number) {
-    await updateSnoozeMinutes(minutes);
-    Haptics.selectionAsync().catch(() => undefined);
+    try {
+      await updateSnoozeMinutes(minutes);
+      Haptics.selectionAsync().catch(() => undefined);
+    } catch {
+      Alert.alert('Gagal menyimpan', 'Durasi tunda tidak bisa diubah. Coba lagi.');
+    }
   }
 
   async function toggleHoliday(enabled: boolean) {
-    await updateHolidayMode(enabled);
-    Haptics.selectionAsync().catch(() => undefined);
+    try {
+      await updateHolidayMode(enabled);
+      Haptics.selectionAsync().catch(() => undefined);
+    } catch {
+      Alert.alert('Gagal menyimpan', 'Mode libur tidak bisa diubah. Coba lagi.');
+    }
   }
 
   return (

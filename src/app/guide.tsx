@@ -92,17 +92,21 @@ export default function GuideScreen() {
   }
 
   async function sendTest() {
-    const id = await scheduleTestNotification(10);
-    if (!id) {
-      const granted = await requestNotificationAccess();
-      if (!granted) return;
-      const retryId = await scheduleTestNotification(10);
-      if (!retryId) return;
+    try {
+      const id = await scheduleTestNotification(10);
+      if (!id) {
+        const granted = await requestNotificationAccess();
+        if (!granted) return;
+        const retryId = await scheduleTestNotification(10);
+        if (!retryId) return;
+      }
+      Alert.alert(
+        'Tes dijadwalkan',
+        'Kunci HP sekarang. Notifikasi tes akan muncul sekitar 10 detik lagi.',
+      );
+    } catch {
+      Alert.alert('Gagal menjadwalkan tes', 'Coba periksa izin notifikasi lalu ulangi.');
     }
-    Alert.alert(
-      'Tes dijadwalkan',
-      'Kunci HP sekarang. Notifikasi tes akan muncul sekitar 10 detik lagi.',
-    );
   }
 
   return (

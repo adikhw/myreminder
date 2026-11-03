@@ -23,6 +23,7 @@ import {
   type ScheduledNotificationSummary,
 } from '@/notifications/scheduler';
 import { CHANNEL_ID } from '@/notifications/constants';
+import { useSettings } from '@/settings/SettingsProvider';
 import { useTheme } from '@/theme';
 
 interface DebugState {
@@ -44,6 +45,7 @@ const EMPTY_STATE: DebugState = {
 export default function DebugScreen() {
   const theme = useTheme();
   const db = useDatabase();
+  const { refreshSettings } = useSettings();
   const permissions = useNotificationPermissions();
   const [state, setState] = useState<DebugState>(EMPTY_STATE);
   const [busy, setBusy] = useState(false);
@@ -81,20 +83,26 @@ export default function DebugScreen() {
           ? `${result.scheduled} notifikasi dijadwalkan, ${result.skipped} dilewati karena batas, ${result.failed} gagal.`
           : 'Izin notifikasi belum aktif, jadi belum ada yang dijadwalkan.',
       );
+    } catch {
+      Alert.alert('Gagal membangun ulang', 'Database atau penjadwalan tidak bisa diakses.');
     } finally {
       setBusy(false);
     }
   }
 
   async function testNotification() {
-    const id = await scheduleTestNotification(10);
-    await refresh();
-    Alert.alert(
-      id ? 'Tes dijadwalkan' : 'Izin belum aktif',
-      id
-        ? 'Notifikasi tes akan muncul sekitar 10 detik lagi.'
-        : 'Aktifkan izin notifikasi terlebih dahulu dari Pengaturan.',
-    );
+    try {
+      const id = await scheduleTestNotification(10);
+      await refresh();
+      Alert.alert(
+        id ? 'Tes dijadwalkan' : 'Izin belum aktif',
+        id
+          ? 'Notifikasi tes akan muncul sekitar 10 detik lagi.'
+          : 'Aktifkan izin notifikasi terlebih dahulu dari Pengaturan.',
+      );
+    } catch {
+      Alert.alert('Gagal menjadwalkan tes', 'Coba periksa izin notifikasi lalu ulangi.');
+    }
   }
 
   async function addDemo() {
@@ -104,6 +112,8 @@ export default function DebugScreen() {
       await rescheduleAll(db);
       await refresh();
       Alert.alert('Data contoh dimuat', `${count} item contoh ditambahkan atau diperbarui.`);
+    } catch {
+      Alert.alert('Gagal memuat data contoh', 'Coba lagi setelah aplikasi siap.');
     } finally {
       setBusy(false);
     }
@@ -122,9 +132,12 @@ export default function DebugScreen() {
             setBusy(true);
             try {
               await resetDatabase(db);
+              await refreshSettings();
               await rescheduleAll(db);
               await refresh();
               Alert.alert('Data dihapus', 'Database sudah kosong dan pengaturan kembali ke awal.');
+            } catch {
+              Alert.alert('Gagal menghapus', 'Database tidak bisa dibersihkan. Coba lagi.');
             } finally {
               setBusy(false);
             }
@@ -141,8 +154,12 @@ export default function DebugScreen() {
         text: 'Batalkan',
         style: 'destructive',
         onPress: async () => {
-          await cancelAllNotifications();
-          await refresh();
+          try {
+            await cancelAllNotifications();
+            await refresh();
+          } catch {
+            Alert.alert('Gagal membatalkan', 'Daftar jadwal tidak bisa diubah. Coba lagi.');
+          }
         },
       },
     ]);

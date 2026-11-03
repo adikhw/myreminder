@@ -38,8 +38,12 @@ export default function ScheduleScreen() {
   }
 
   async function toggleHoliday(enabled: boolean) {
-    await updateHolidayMode(enabled);
-    Haptics.selectionAsync().catch(() => undefined);
+    try {
+      await updateHolidayMode(enabled);
+      Haptics.selectionAsync().catch(() => undefined);
+    } catch {
+      Alert.alert('Gagal menyimpan', 'Mode libur tidak bisa diubah. Coba lagi.');
+    }
   }
 
   return (
