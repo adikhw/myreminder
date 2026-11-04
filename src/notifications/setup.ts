@@ -1,6 +1,5 @@
 import { AndroidImportance, AndroidNotificationVisibility } from 'expo-notifications';
 import * as Notifications from 'expo-notifications';
-import * as TaskManager from 'expo-task-manager';
 import { Platform } from 'react-native';
 
 import {
@@ -57,16 +56,19 @@ export async function ensureChannel(): Promise<void> {
 }
 
 export async function ensureCategories(): Promise<void> {
+  // `opensAppToForeground: true` routes the tap through Expo's
+  // NotificationForwarderActivity. ColorOS drops the background broadcast used
+  // by `opensAppToForeground: false`, which made the buttons look dead.
   await Notifications.setNotificationCategoryAsync(REMINDER_CATEGORY, [
     {
       identifier: DONE_ACTION,
       buttonTitle: 'Selesai',
-      options: { opensAppToForeground: false },
+      options: { opensAppToForeground: true },
     },
     {
       identifier: SNOOZE_ACTION,
       buttonTitle: 'Tunda',
-      options: { opensAppToForeground: false },
+      options: { opensAppToForeground: true },
     },
   ]);
 
@@ -76,7 +78,7 @@ export async function ensureCategories(): Promise<void> {
     {
       identifier: SNOOZE_ACTION,
       buttonTitle: 'Tunda',
-      options: { opensAppToForeground: false },
+      options: { opensAppToForeground: true },
     },
   ]);
 }
@@ -84,10 +86,9 @@ export async function ensureCategories(): Promise<void> {
 async function registerBackgroundTask(): Promise<void> {
   if (Platform.OS !== 'android') return;
   try {
-    const registered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_ACTION_TASK);
-    if (!registered) {
-      await Notifications.registerTaskAsync(BACKGROUND_ACTION_TASK);
-    }
+    // Idempotent, and re-registering repairs records left behind by an older
+    // build where the task was defined too late to load headlessly.
+    await Notifications.registerTaskAsync(BACKGROUND_ACTION_TASK);
   } catch {
     // Registration can fail on a device that has not granted notification
     // permission yet. The foreground response listener still handles actions.
