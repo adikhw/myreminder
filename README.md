@@ -1,45 +1,106 @@
-# myReminder
+<p align="center">
+  <img src="assets/images/icon.png" width="120" height="120" alt="Ikon myReminder" />
+</p>
 
-Aplikasi pengingat pribadi untuk Android yang bekerja **100% offline**. Satu mesin pengingat, tiga tampilan: **tugas**, **acara kalender**, dan **jadwal mapel**. Semua data disimpan di SQLite di HP; tidak ada akun, server, atau sinkronisasi.
+<h1 align="center">myReminder</h1>
 
-Dibuat dengan Expo SDK 58, React Native, TypeScript strict, Expo Router, `expo-sqlite`, `expo-notifications`, dan `date-fns`.
+<p align="center">
+  <strong>Reminder, tugas, dan jadwal mapel — sepenuhnya offline.</strong><br />
+  <sub>Satu mesin pengingat, tiga tampilan. Tanpa akun, server, atau sinkronisasi.</sub>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Android-7.0%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android 7.0+" />
+  <img src="https://img.shields.io/badge/Expo_SDK-58-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo SDK 58" />
+  <img src="https://img.shields.io/badge/React_Native-0.88-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Native 0.88" />
+  <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript strict" />
+  <img src="https://img.shields.io/badge/Offline-100%25-4F46E5?style=for-the-badge" alt="100% offline" />
+  <img src="https://img.shields.io/badge/Tests-38_passed-16A34A?style=for-the-badge&logo=jest&logoColor=white" alt="38 tes lolos" />
+  <img src="https://img.shields.io/badge/License-MIT-0B0C10?style=for-the-badge" alt="MIT License" />
+</p>
+
+<p align="center">
+  <sub>Dibuat untuk dipakai sehari-hari di HP sendiri — bukan untuk toko aplikasi.</sub>
+</p>
+
+---
+
+**myReminder** adalah aplikasi pengingat pribadi untuk Android yang bekerja **100% offline**. Semua data disimpan di SQLite di HP; aplikasi tidak mengirim request jaringan, tidak butuh login, dan tidak bergantung pada layanan pihak ketiga.
+
+Satu model `Item` dipakai untuk tiga hal: **tugas**, **acara kalender**, dan **jadwal mapel**. Semua memakai mesin pengingat yang sama, sehingga aturan “sebelum”, “berulang”, dan “malam sebelumnya” bisa dipakai di mana saja.
+
+---
+
+## Daftar isi
+
+- [Kenapa myReminder](#kenapa-myreminder)
+- [Fitur](#fitur)
+- [Cara pakai singkat](#cara-pakai-singkat)
+- [Pasang APK di HP](#pasang-apk-di-hp)
+- [Development](#development)
+- [Build APK release](#build-apk-release)
+- [Notifikasi di Android](#notifikasi-di-android)
+- [Arsitektur](#arsitektur)
+- [Database](#database)
+- [Navigasi](#navigasi)
+- [Tes dan kualitas](#tes-dan-kualitas)
+- [Troubleshooting](#troubleshooting)
+- [Batasan](#batasan)
+- [Struktur folder](#struktur-folder)
+- [Versi](#versi)
+- [Lisensi](#lisensi)
+
+---
+
+## Kenapa myReminder
+
+- **Offline total.** Mode pesawat tetap normal; tidak ada API, akun, atau cloud.
+- **Satu mesin, tiga tampilan.** Tugas, acara, dan mapel memakai model dan penjadwal yang sama.
+- **Notifikasi yang serius.** Exact alarm, `setAlarmClock()`, channel importance tinggi, dan aksi Selesai/Tunda.
+- **Bahasa Indonesia.** Seluruh teks antarmuka berbahasa Indonesia; kode, identifier, dan komentar berbahasa Inggris.
+- **Data milik sendiri.** SQLite lokal, tanpa telemetry.
 
 ---
 
 ## Fitur
 
-### Tugas
+### 📝 Tugas
+
 - Judul, catatan, prioritas (rendah/normal/tinggi), dan deadline opsional.
-- Tugas tanpa deadline tetap bisa punya pengingat berulang untuk hal-hal seperti “minum air” atau “istirahat”.
+- Tugas tanpa deadline tetap bisa punya pengingat berulang untuk hal seperti “minum air” atau “istirahat”.
 - Daftar otomatis mengurutkan tugas terbuka, prioritas, deadline, lalu judul.
 - Tandai selesai langsung dari daftar. Tugas selesai tidak lagi menjadwalkan notifikasi.
 
-### Pengingat
-- **Sebelum**: N menit/jam/hari/minggu sebelum deadline atau jam mulai mapel.
-- **Berulang**: setiap X menit/jam/hari/minggu, berhenti sendiri setelah N kali.
-- **Malam sebelumnya**: khusus mapel, misalnya pukul 20:00 sehari sebelum kelas.
+### ⏰ Pengingat
+
+- **Sebelum** — N menit/jam/hari/minggu sebelum deadline atau jam mulai mapel.
+- **Berulang** — setiap X menit/jam/hari/minggu, berhenti sendiri setelah N kali.
+- **Malam sebelumnya** — khusus mapel, misalnya pukul 20:00 sehari sebelum kelas.
 - Satu item boleh punya beberapa aturan sekaligus.
-- Notifikasi punya aksi **Selesai** dan **Tunda**. Tunda memakai durasi yang bisa dipilih di Pengaturan.
+- Notifikasi punya aksi **Selesai** dan **Tunda**. Durasi tunda bisa diubah di Pengaturan.
 - Notifikasi mapel hanya punya aksi **Tunda**; mapel ditandai selesai dengan mematikan saklar aktif.
 
-### Jadwal mapel
+### 🏫 Jadwal mapel
+
 - Nama mapel, hari, jam mulai/selesai, ruangan, dan guru.
 - Diulang setiap minggu tanpa perlu membuat ulang.
 - Saklar aktif/nonaktif per mapel untuk libur panjang.
 - Mode libur global untuk menjeda semua notifikasi mapel sekaligus.
 
-### Kalender
+### 🗓️ Kalender
+
 - Tampilan bulanan, minggu dimulai Senin.
 - Hari yang punya tugas, acara, atau mapel diberi tanda.
 - Acara bisa memakai jam atau seharian.
 - Mengetuk tanggal membuka agenda hari itu; tombol tambah langsung mengisi tanggal tersebut.
 
-### Tampilan & data
+### 🎨 Tampilan dan data
+
 - Mode terang/gelap mengikuti sistem.
 - Palet indigo/ink, target sentuh besar, haptic feedback, dan date/time picker native.
 - Data bertahan setelah aplikasi ditutup atau HP restart.
-- Layar Panduan berisi langkah izin notifikasi, exact alarm, baterai, autostart, dan kunci recent apps.
-- Layar Diagnostik menampilkan izin, channel, jumlah item, dan notifikasi yang sedang terjadwal.
+- Layar **Panduan** berisi langkah izin notifikasi, exact alarm, baterai, autostart, layar kunci, dan kunci recent apps.
+- Layar **Diagnostik** menampilkan izin, channel, jumlah item, dan notifikasi yang sedang terjadwal.
 
 ---
 
@@ -52,7 +113,7 @@ Dibuat dengan Expo SDK 58, React Native, TypeScript strict, Expo Router, `expo-s
 5. Buka tab **Kalender** untuk melihat sebaran item dalam bulan.
 6. Buka tab **Atur** untuk izin, durasi tunda, mode libur, panduan, dan diagnostik.
 
-Saat pertama kali memakai aplikasi, izinkan notifikasi. Kalau izin ditolak, aplikasi tetap bisa dipakai dan akan menampilkan penjelasan, bukan crash.
+Saat pertama kali memakai aplikasi, izinkan notifikasi. Kalau izin ditolak, aplikasi tetap bisa dipakai dan menampilkan penjelasan, bukan crash.
 
 ---
 
@@ -97,7 +158,7 @@ Build release lokal memakai `android/app/debug.keystore` bawaan Expo. Ini cukup 
 
 ## Development
 
-Prasyarat:
+### Prasyarat
 
 - Node.js LTS dan npm
 - JDK 17
@@ -116,7 +177,7 @@ Untuk build native di HP/emulator:
 npx expo run:android
 ```
 
-Perintah yang dipakai untuk memeriksa project:
+Perintah pemeriksaan:
 
 ```bash
 npx tsc --noEmit       # typecheck
@@ -127,6 +188,20 @@ npx expo-doctor
 ```
 
 > Gunakan `npx expo install <paket>` saat menambah library Expo agar versinya cocok dengan SDK. Jangan menebak versi.
+
+### Teknologi
+
+| Lapisan | Teknologi |
+|---|---|
+| Framework | <img src="https://img.shields.io/badge/Expo_SDK_58-000020?logo=expo&logoColor=white" alt="Expo" /> <img src="https://img.shields.io/badge/React_Native_0.88-20232A?logo=react&logoColor=61DAFB" alt="React Native" /> |
+| Bahasa | <img src="https://img.shields.io/badge/TypeScript_strict-3178C6?logo=typescript&logoColor=white" alt="TypeScript" /> |
+| Navigasi | <img src="https://img.shields.io/badge/Expo_Router-000020?logo=expo&logoColor=white" alt="Expo Router" /> |
+| Data | <img src="https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white" alt="SQLite" /> <img src="https://img.shields.io/badge/expo--sqlite-000020?logo=expo&logoColor=white" alt="expo-sqlite" /> |
+| Notifikasi | <img src="https://img.shields.io/badge/expo--notifications-000020?logo=expo&logoColor=white" alt="expo-notifications" /> |
+| Tanggal | <img src="https://img.shields.io/badge/date--fns-770C56" alt="date-fns" /> |
+| Tes | <img src="https://img.shields.io/badge/Jest-C21325?logo=jest&logoColor=white" alt="Jest" /> |
+| Lint | <img src="https://img.shields.io/badge/ESLint-4B3263?logo=eslint&logoColor=white" alt="ESLint" /> |
+| Build | <img src="https://img.shields.io/badge/Gradle-02303A?logo=gradle&logoColor=white" alt="Gradle" /> <img src="https://img.shields.io/badge/Android_SDK_36-3DDC84?logo=android&logoColor=white" alt="Android SDK 36" /> |
 
 ### Struktur pengembangan
 
@@ -140,7 +215,7 @@ npx expo-doctor
 
 ---
 
-## Build APK release lokal
+## Build APK release
 
 Pastikan SDK Android sudah terpasang:
 
@@ -182,6 +257,8 @@ Kalau ingin APK universal untuk beberapa arsitektur:
 
 Build pertama bisa memakan waktu belasan menit dan RAM besar. Tutup browser/aplikasi berat. Jika Gradle kehabisan memori, naikkan `org.gradle.jvmargs` di `android/gradle.properties` atau batasi arsitektur seperti contoh di atas.
 
+> `expo prebuild --clean` menghapus folder `android/`, termasuk `debug.keystore`. Cadangkan dulu keystore-nya sebelum menjalankan perintah ini.
+
 ### Fallback EAS
 
 Kalau build lokal tidak memungkinkan, build cloud bisa dipakai:
@@ -196,7 +273,7 @@ EAS memerlukan akun Expo dan konfigurasi `eas.json`. Untuk pemakaian pribadi, bu
 
 ## Notifikasi di Android
 
-Notifikasi lokal di Android bisa diperlambat atau dihentikan oleh sistem. Aplikasi sudah menyiapkan channel importance tinggi, izin Android 13, dan exact alarm, tetapi pengaturan HP tetap perlu dicek sekali.
+Notifikasi lokal di Android bisa diperlambat atau dihentikan oleh sistem. Aplikasi sudah menyiapkan channel importance tinggi, izin Android 13, exact alarm, dan `setAlarmClock()`, tetapi pengaturan HP tetap perlu dicek sekali.
 
 ### Yang perlu diizinkan
 
@@ -215,11 +292,11 @@ Buka **Atur → Kirim notifikasi tes (10 detik)**, lalu kunci HP. Notifikasi seh
 
 ### Perilaku yang perlu dipahami
 
-- **Reminder memakai `setAlarmClock()`**: alarm bangun sendiri dari Doze dan tidak ditunda kebijakan baterai OEM. Karena itu ikon alarm kecil muncul di status bar selama ada reminder terjadwal.
-- **App di-swipe dari recent apps**: alarm tetap berjalan karena dijadwalkan oleh sistem, bukan oleh JavaScript yang terus hidup.
-- **HP restart**: `expo-notifications` menyimpan request dan memulihkan alarm setelah HP **pertama kali dibuka kunci**. Android tidak mengirim sinyal boot ke aplikasi biasa selama perangkat masih terkunci, jadi ini batasan sistem, bukan bug. Kalau ada notifikasi yang terlewat, buka aplikasi sekali agar `rescheduleAll()` membangun ulang jadwal dari SQLite.
+- **Reminder memakai `setAlarmClock()`** — alarm bangun sendiri dari Doze dan tidak ditunda kebijakan baterai OEM. Karena itu ikon alarm kecil muncul di status bar selama ada reminder terjadwal.
+- **App di-swipe dari recent apps** — alarm tetap berjalan karena dijadwalkan oleh sistem, bukan oleh JavaScript yang terus hidup.
+- **HP restart** — `expo-notifications` menyimpan request dan memulihkan alarm setelah HP **pertama kali dibuka kunci**. Android tidak mengirim sinyal boot ke aplikasi biasa selama perangkat masih terkunci, jadi ini batasan sistem, bukan bug. Kalau ada notifikasi yang terlewat, buka aplikasi sekali agar `rescheduleAll()` membangun ulang jadwal dari SQLite.
 - **Alarm yang waktunya lewat saat HP mati tidak akan muncul setelah nyala** — tidak ada yang bisa dipulihkan karena waktunya sudah terlewat.
-- **Force stop dari Settings**: Android membatalkan semua alarm aplikasi. Ini perilaku normal. Buka aplikasi lagi untuk menjadwalkan ulang.
+- **Force stop dari Settings** — Android membatalkan semua alarm aplikasi. Ini perilaku normal. Buka aplikasi lagi untuk menjadwalkan ulang.
 - **Mode libur** dan **mapel nonaktif** memang menghentikan notifikasi terkait.
 - **Tanpa deadline**, aturan “sebelum” tidak punya acuan dan akan ditolak validasi. Gunakan pengingat berulang.
 - **Jendela penjadwalan hanya 7 hari** ke depan. Jadwal dibangun ulang setiap aplikasi dibuka, setiap item berubah, dan setelah aksi notifikasi.
@@ -230,6 +307,17 @@ Tidak ada aplikasi yang bisa menjamin notifikasi 100% jika produsen HP mematikan
 ---
 
 ## Arsitektur
+
+```mermaid
+flowchart TD
+    UI["Layar Expo Router"] -->|baca / tulis| DB[("SQLite<br/>myreminder.db")]
+    UI --> DOM["Domain murni<br/>computeFireOccurrences()"]
+    DOM --> SCHED["rescheduleAll()<br/>7 hari ke depan"]
+    SCHED --> NOTIF["expo-notifications"]
+    NOTIF --> ALARM["AlarmManager<br/>setAlarmClock()"]
+    ALARM --> PUSH["Notifikasi Android"]
+    PUSH -->|"Selesai / Tunda"| UI
+```
 
 ### Satu item, tiga tampilan
 
@@ -312,12 +400,12 @@ Menyimpan semua item. Kolom penting:
 | `priority` | `low`, `normal`, `high` |
 | `due_at` | Epoch milidetik atau `NULL` |
 | `all_day` | 0/1 |
-| `weekday`, `start_minutes`, `end_minutes` | Jadwal mapel |
+| `weekday`, `start_min`, `end_min` | Jadwal mapel |
 | `room`, `teacher` | Detail mapel |
 | `enabled` | 0/1 |
 | `done` | 0/1 |
-| `rules` | JSON array aturan pengingat |
-| `created_at`, `updated_at` | Epoch milidetik |
+| `rules_json` | JSON array aturan pengingat |
+| `created_at` | Epoch milidetik |
 
 ### Tabel `settings`
 
@@ -336,7 +424,7 @@ type ReminderRule =
   | { kind: 'eve'; atMinutes: number };
 ```
 
-Aturan disimpan sebagai JSON di kolom `rules`, sehingga bentuk baru bisa ditambahkan tanpa migrasi kolom.
+Aturan disimpan sebagai JSON di kolom `rules_json`, sehingga bentuk baru bisa ditambahkan tanpa migrasi kolom.
 
 ---
 
@@ -354,7 +442,7 @@ Aturan disimpan sebagai JSON di kolom `rules`, sehingga bentuk baru bisa ditamba
 
 ---
 
-## Tes & kualitas
+## Tes dan kualitas
 
 Tes domain berjalan tanpa React Native atau HP:
 
@@ -362,7 +450,7 @@ Tes domain berjalan tanpa React Native atau HP:
 npm test -- --runInBand
 ```
 
-Cakupan saat ini:
+Cakupan saat ini (38 tes):
 
 - waktu bunyi aturan `before`, `repeat`, dan `eve`,
 - batas `maxCount`, item selesai, dan item nonaktif,
@@ -402,6 +490,14 @@ Tes manual notifikasi tetap perlu dilakukan di HP asli karena perilaku baterai, 
 ### Notifikasi telat beberapa menit
 
 Biasanya exact alarm belum diizinkan atau baterai masih membatasi. Ikuti panduan di layar **Atur → Panduan pengaturan HP**. Beberapa produsen juga punya pengaturan tambahan seperti “Sleep standby” atau “Ultra battery saver” yang perlu dikecualikan.
+
+### Tombol Selesai/Tunda tidak merespons
+
+Aksi memakai jalur `NotificationForwarderActivity` dan akan membuka aplikasi sebentar. Kalau tombol terlihat “mati”, periksa:
+
+- apakah aplikasi benar-benar terbuka saat tombol ditekan,
+- apakah kategori notifikasi sudah terdaftar (buka aplikasi sekali setelah update),
+- logcat: `adb logcat -d | grep -iE "expo-notifications|TaskService|ReactNativeJS"`.
 
 ### APK gagal dipasang
 
@@ -456,6 +552,7 @@ myreminder/
 │   └── theme/                 # token terang/gelap
 ├── assets/images/             # ikon dan splash
 ├── app.json                   # konfigurasi Expo/Android
+├── index.js                   # entry: task notifikasi + expo-router
 ├── package.json
 └── README.md
 ```
@@ -466,10 +563,23 @@ myreminder/
 
 ## Versi
 
-- Aplikasi: 1.0.0
-- Package Android: `com.adikhwan.myreminder`
-- Expo SDK: 58
-- React Native: 0.88
-- compileSdk/targetSdk: 36
-- Bahasa tampilan: Indonesia
-- Kode, identifier, dan komentar: Inggris
+| Komponen | Versi |
+|---|---|
+| Aplikasi | 1.0.0 |
+| Package Android | `com.adikhwan.myreminder` |
+| Expo SDK | 58 |
+| React Native | 0.88.1 |
+| compileSdk / targetSdk | 36 |
+| minSdk | 24 (Android 7.0) |
+| Bahasa tampilan | Indonesia |
+| Kode, identifier, komentar | Inggris |
+
+---
+
+## Lisensi
+
+Dirilis dengan [MIT License](LICENSE).
+
+<p align="center">
+  <sub>Dibuat untuk dipakai sendiri, bukan untuk dilupakan.</sub>
+</p>
