@@ -161,6 +161,10 @@ async function scheduleOccurrence(item: Item, occurrence: FireOccurrence): Promi
       type: Notifications.SchedulableTriggerInputTypes.DATE,
       date: new Date(occurrence.at),
       channelId: CHANNEL_ID,
+      // `setAlarmClock()` wakes the device even in Doze. OEM battery policies
+      // defer the default `setExactAndAllowWhileIdle()` alarms until the next
+      // unlock, which is why reminders only fired while the screen was on.
+      delivery: 'alarmClock',
     },
   });
 }
@@ -191,6 +195,7 @@ export async function scheduleSnooze(
       type: Notifications.SchedulableTriggerInputTypes.DATE,
       date: new Date(at),
       channelId: CHANNEL_ID,
+      delivery: 'alarmClock',
     },
   });
 }
@@ -198,6 +203,11 @@ export async function scheduleSnooze(
 export async function scheduleTestNotification(seconds = 10): Promise<string | null> {
   const granted = await requestNotificationPermission();
   if (!granted) return null;
+
+  // Use the same DATE + alarmClock path as real reminders. A TIME_INTERVAL
+  // trigger cannot opt into `setAlarmClock()`, so testing with one would pass
+  // while actual reminders stayed deferred until the next unlock.
+  const at = Date.now() + Math.max(1, Math.round(seconds)) * 1000;
 
   return Notifications.scheduleNotificationAsync({
     content: {
@@ -207,9 +217,10 @@ export async function scheduleTestNotification(seconds = 10): Promise<string | n
       data: { test: true },
     },
     trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-      seconds: Math.max(1, Math.round(seconds)),
+      type: Notifications.SchedulableTriggerInputTypes.DATE,
+      date: new Date(at),
       channelId: CHANNEL_ID,
+      delivery: 'alarmClock',
     },
   });
 }

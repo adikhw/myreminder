@@ -1,4 +1,4 @@
-import { AndroidImportance } from 'expo-notifications';
+import { AndroidImportance, AndroidNotificationVisibility } from 'expo-notifications';
 import * as Notifications from 'expo-notifications';
 import * as TaskManager from 'expo-task-manager';
 import { Platform } from 'react-native';
@@ -50,6 +50,9 @@ export async function ensureChannel(): Promise<void> {
     vibrationPattern: [0, 250, 180, 250],
     lightColor: '#4F46E5',
     enableVibrate: true,
+    // Keep the reminder visible on the lock screen; some ColorOS builds hide
+    // channels that inherit the default visibility.
+    lockscreenVisibility: AndroidNotificationVisibility.PUBLIC,
   });
 }
 
