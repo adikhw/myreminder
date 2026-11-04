@@ -201,21 +201,24 @@ Notifikasi lokal di Android bisa diperlambat atau dihentikan oleh sistem. Aplika
 ### Yang perlu diizinkan
 
 1. **Notifikasi** — izin dasar Android 13.
-2. **Alarm & pengingat** — izin exact alarm agar jadwal tidak digeser beberapa menit.
+2. **Alarm & pengingat** — izin exact alarm agar jadwal tidak digeser beberapa menit. Di Android 13+ aplikasi mendeklarasikan `USE_EXACT_ALARM` sehingga izin ini aktif otomatis; di Android 12 izinnya ada di **Pengaturan → Aplikasi → Akses khusus → Alarm & pengingat**.
 3. **Baterai tidak dibatasi** — Info aplikasi → Baterai → Tidak dibatasi / Izinkan aktivitas latar belakang.
 4. **Autostart** — Realme/ColorOS: Pengaturan → Baterai → Peluncuran aplikasi → myReminder.
 5. **Kunci recent apps** — tarik kartu myReminder ke bawah atau ketuk ikon kunci di daftar aplikasi terakhir.
+6. **Layar kunci** — Pengaturan → Notifikasi → myReminder → Layar kunci → “Tampilkan isi”, supaya notifikasi terlihat sebelum HP dibuka.
 
 Layar **Atur → Panduan pengaturan HP** memandu langkah ini dan menyediakan tombol ke pengaturan sistem.
 
 ### Tes notifikasi
 
-Buka **Atur → Kirim notifikasi tes (10 detik)**, lalu kunci HP. Notifikasi seharusnya muncul sekitar 10 detik kemudian. Cara yang sama tersedia di layar Panduan dan Diagnostik.
+Buka **Atur → Kirim notifikasi tes (10 detik)**, lalu kunci HP. Notifikasi seharusnya muncul sekitar 10 detik kemudian. Notifikasi tes memakai jalur `setAlarmClock()` yang sama dengan reminder asli, jadi hasilnya bisa dipercaya. Cara yang sama tersedia di layar Panduan dan Diagnostik.
 
 ### Perilaku yang perlu dipahami
 
+- **Reminder memakai `setAlarmClock()`**: alarm bangun sendiri dari Doze dan tidak ditunda kebijakan baterai OEM. Karena itu ikon alarm kecil muncul di status bar selama ada reminder terjadwal.
 - **App di-swipe dari recent apps**: alarm tetap berjalan karena dijadwalkan oleh sistem, bukan oleh JavaScript yang terus hidup.
-- **HP restart**: `expo-notifications` menyimpan request dan memulihkan alarm lewat receiver boot. Kalau ada notifikasi yang terlewat, buka aplikasi sekali agar `rescheduleAll()` membangun ulang jadwal dari SQLite.
+- **HP restart**: `expo-notifications` menyimpan request dan memulihkan alarm setelah HP **pertama kali dibuka kunci**. Android tidak mengirim sinyal boot ke aplikasi biasa selama perangkat masih terkunci, jadi ini batasan sistem, bukan bug. Kalau ada notifikasi yang terlewat, buka aplikasi sekali agar `rescheduleAll()` membangun ulang jadwal dari SQLite.
+- **Alarm yang waktunya lewat saat HP mati tidak akan muncul setelah nyala** — tidak ada yang bisa dipulihkan karena waktunya sudah terlewat.
 - **Force stop dari Settings**: Android membatalkan semua alarm aplikasi. Ini perilaku normal. Buka aplikasi lagi untuk menjadwalkan ulang.
 - **Mode libur** dan **mapel nonaktif** memang menghentikan notifikasi terkait.
 - **Tanpa deadline**, aturan “sebelum” tidak punya acuan dan akan ditolak validasi. Gunakan pengingat berulang.

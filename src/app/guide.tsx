@@ -46,9 +46,14 @@ const STEPS: Step[] = [
     body: 'Buka daftar aplikasi terakhir, tarik kartu myReminder ke bawah atau ketuk ikon kunci. Ini membantu ColorOS tidak menutup aplikasi.',
   },
   {
+    icon: 'phone-portrait-outline',
+    title: 'Tampilkan di layar kunci',
+    body: 'Buka Pengaturan → Notifikasi → myReminder → Layar kunci, lalu pilih “Tampilkan isi”. Tanpa ini notifikasi bisa masuk tetapi tidak terlihat selama HP masih terkunci.',
+  },
+  {
     icon: 'refresh-outline',
     title: 'Setelah HP restart',
-    body: 'Alarm biasanya dipulihkan otomatis setelah reboot. Kalau ada pengingat yang terlewat, buka myReminder sekali agar jadwal dibangun ulang dari database.',
+    body: 'Alarm dipulihkan setelah HP pertama kali dibuka kunci, bukan saat masih di layar kunci. Kalau ada pengingat yang terlewat, buka myReminder sekali agar jadwal dibangun ulang dari database.',
   },
 ];
 
