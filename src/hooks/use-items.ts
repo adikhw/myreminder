@@ -1,7 +1,8 @@
 import { useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { listItems } from '@/db/items';
+import { subscribeItemsRevision } from '@/db/items-events';
 import { useDatabase } from '@/db/DatabaseProvider';
 import type { Item, ItemType } from '@/domain/types';
 
@@ -16,6 +17,14 @@ export function useItems(type?: ItemType) {
     setLoading(false);
     return next;
   }, [db, type]);
+
+  useEffect(
+    () =>
+      subscribeItemsRevision(() => {
+        reload().catch(() => undefined);
+      }),
+    [reload],
+  );
 
   useFocusEffect(
     useCallback(() => {

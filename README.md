@@ -285,10 +285,12 @@ SQLite → hitung ulang 7 hari → batalkan semua notifikasi → jadwalkan ulang
 1. `NotificationBridge` memantau perubahan item dan app state.
 2. `rescheduleAll()` membaca item dari SQLite.
 3. `computeFireOccurrences()` menghasilkan waktu bunyi dan jenis aturan.
-4. `expo-notifications` menjadwalkan trigger tanggal.
-5. Saat notifikasi muncul, aksi **Selesai** atau **Tunda** dikirim ke headless task.
+4. `expo-notifications` menjadwalkan trigger tanggal dengan `delivery: 'alarmClock'`.
+5. Saat aksi **Selesai** atau **Tunda** ditekan, Android membuka aplikasi lewat `NotificationForwarderActivity`, lalu listener foreground menangani responsnya. Tombol memakai jalur ini karena ColorOS membuang broadcast background untuk aksi notifikasi.
 6. Aksi **Selesai** menandai item selesai; **Tunda** menjadwalkan satu notifikasi baru.
-7. Setelah aksi, jadwal dibangun ulang.
+7. Setelah aksi, jadwal dibangun ulang dan daftar item memuat ulang lewat `items-events`.
+
+Task background (`myreminder-notification-action`) tetap didefinisikan di `index.js` dan dipakai untuk notifikasi yang diterima saat aplikasi di belakang. Payload-nya membaca `content.dataString` karena notifikasi terjadwal menyimpan `data` sebagai string JSON.
 
 Notifikasi mapel memakai kategori tanpa tombol Selesai karena satu sesi mapel tidak masuk akal ditandai “selesai” secara permanen.
 

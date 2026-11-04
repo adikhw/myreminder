@@ -1,6 +1,7 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
 
 import { getItem, setItemDone } from '@/db/items';
+import { bumpItemsRevision } from '@/db/items-events';
 
 import { DONE_ACTION, SNOOZE_ACTION } from './constants';
 import { rescheduleAll, scheduleSnooze } from './scheduler';
@@ -18,6 +19,7 @@ export async function handleNotificationAction(
     const item = await getItem(db, itemId);
     if (!item || item.type === 'class') return;
     await setItemDone(db, itemId, true);
+    bumpItemsRevision();
     await rescheduleAll(db);
     return;
   }
